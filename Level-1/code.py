@@ -17,22 +17,27 @@ Order = namedtuple('Order', 'id, items')
 Item = namedtuple('Item', 'type, description, amount, quantity')
 
 
+MAX_ITEM_AMOUNT = 100000 # maximum price of item in the shop
+MIN_ITEM_AMOUNT = 1 # minimum price of item in the shop
+MAX_QUANTITY = 100 # maximum quantity of an item in the shop
+MIN_QUANTITY = 1 # minimum quantity of an item in the shop
+MAX_TOTAL = 1e6 # maximum total amount accepted for an order
+
 def validorder(order: Order):
     net = 0
 
     for item in range(len(order.items)):
-        if order.items[item].type == 'payment' and 500 < order.items[item].amount < 100000:
+        if order.items[item].type == 'payment' and MIN_ITEM_AMOUNT < order.items[item].amount < MAX_ITEM_AMOUNT:
             net += order.items[item].amount
-            print('pr', net)
         elif order.items[item].type == 'product':
-            if order.items[item].quantity < 500 and 1 <= order.items[item].amount < 100000:
+            if order.items[item].quantity < MAX_QUANTITY and MIN_ITEM_AMOUNT <= order.items[item].amount < MAX_ITEM_AMOUNT:
                 net -= order.items[item].amount * order.items[item].quantity
-            if -100000 > float(net) > 100000:
+            if -MAX_TOTAL > float(net) > MAX_TOTAL:
                 return "Total amount exceeded"
         elif order.items[item].type not in ('product', 'payment'):
-            return ("Invalid item type: %s" % order.items[item].type)
+            return f"Invalid item type: {order.items[item].type}"
 
         if net != 0:
-            return ("Order ID: %s - Payment imbalance: $%0.2f" % (order.id, net))
+            return f"Order ID: {order.id} - Payment imbalance: ${net:.2f}"
         elif net > 0:
-            return ("Order ID: %s - Full payment received!" % order.id)
+            return f"Order ID: {order.id} - Full payment received!"
