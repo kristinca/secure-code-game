@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////
 ///                                                  ///
-///   0. Perform code review. Can you spot the bug?  /// 
+///   0. Perform code review. Can you spot the bug?  ///
 ///   1. Run tests.c to test the functionality       ///
 ///   2. Run hack.c and if passing then CONGRATS!    ///
 ///   3. Compare your solution with solution.c       ///
@@ -26,7 +26,7 @@ typedef struct {
 
 user_account* create_user_account(bool isAdmin, const char* username) {
     user_account* ua;
-    if (strlen(username) > MAX_USERNAME_LEN) 
+    if (strlen(username) > MAX_USERNAME_LEN)
         return NULL;
     ua = malloc(sizeof (user_account));
     if (NULL == ua) {
@@ -43,10 +43,12 @@ user_account* create_user_account(bool isAdmin, const char* username) {
 bool update_setting(user_account* ua, const char *index, const char *value) {
     char *endptr;
     long i, v;
+    if (index < 0)
+        return false;
     i = strtol(index, &endptr, 10);
     if (*endptr)
         return false;
-    if (i >= SETTINGS_COUNT)
+    if (i < 0 || i >= SETTINGS_COUNT)
         return false;
     v = strtol(value, &endptr, 10);
     if (*endptr)
