@@ -30,9 +30,12 @@ class TaxPayer:
         # builds path
         base_dir = os.path.dirname(os.path.abspath(__file__))
         prof_picture_path = os.path.normpath(os.path.join(base_dir, path))
-    
-        with open(prof_picture_path, 'rb') as pic:
-            picture = bytearray(pic.read())
+        
+        try:
+            with open(prof_picture_path, 'rb') as pic:
+                picture = bytearray(pic.read())
+        except FileNotFoundError:
+            prof_picture_path = base_dir
 
         # assume that image is returned on screen after this
         return prof_picture_path
@@ -43,9 +46,12 @@ class TaxPayer:
         
         if not path:
             raise Exception("Error: Tax form is required for all users")
-       
-        with open(path, 'rb') as form:
-            tax_data = bytearray(form.read())
+        
+        try:
+            with open(path, 'rb') as form:
+                tax_data = bytearray(form.read())
+        except FileNotFoundError:
+            path = self.get_prof_picture(path)
 
         # assume that taxa data is returned on screen after this
         return path
